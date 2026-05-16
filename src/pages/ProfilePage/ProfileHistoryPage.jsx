@@ -5,7 +5,7 @@ import InfoApp from "../../components/HomePage/InfoApp";
 import SideBar from "@/components/Profile/SideBar";
 import ProfileHeader from "@/components/Profile/ProfileHeader";
 import HistoryList from "@/components/Profile/HistoryList";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 
 export default function ProfileHistoryPage() {
   const [historyData, setHistoryData] = useState([]);
@@ -18,7 +18,7 @@ export default function ProfileHistoryPage() {
         setIsLoading(true);
         // Gọi API dựa trên route bạn đã cung cấp
         // Lưu ý: requireAuth thường yêu cầu gửi kèm Token trong Cookie hoặc Header
-        const response = await axios.get("/api/order/order-history");
+        const response = await axiosClient.get("/order/order-history");
         console.log(response);
         const orders = response.data.data || response.data;
 

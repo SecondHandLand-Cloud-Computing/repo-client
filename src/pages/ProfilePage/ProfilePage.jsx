@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import {
   User,
   CreditCard,
@@ -62,7 +62,7 @@ export default function ProfilePage() {
     const fetchUserProfile = async () => {
       try {
         // Sử dụng đúng endpoint bạn đã dùng ở ProfileHeader
-        const response = await axios.get("/api/customer/me");
+        const response = await axiosClient.get("/customer/me");
 
         // Truy cập vào .data.data theo cấu trúc API của bạn
         const user = response.data.data;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {User} from "lucide-react";
-import axios from "axios";
+import axiosClient from "../../api/axiosClient";
 import bgBanner from "@assets/images/hello.png";
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -17,7 +17,7 @@ export default function ProfileHeader() {
     const fetchUserData = async () => {
       try {
 
-        const response = await axios.get("/api/customer/me");
+        const response = await axiosClient.get("/customer/me");
         console.log(response);
         const user = response.data.data;
         console.log(user);
