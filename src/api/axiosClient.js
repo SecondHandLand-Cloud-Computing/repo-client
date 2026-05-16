@@ -25,4 +25,33 @@ const axiosClient = axios.create({
   withCredentials: true,
 });
 
+// Request interceptor: Tự động đính Token vào Header mỗi khi gọi API
+axiosClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor: Lưu Token vào localStorage khi đăng nhập/đăng ký thành công
+axiosClient.interceptors.response.use(
+  (response) => {
+    if (response.data && response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
+    return response;
+  },
+  (error) => {
+    // Nếu bị 401 (hết hạn token), có thể xóa token cũ
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosClient;
