@@ -19,6 +19,8 @@ export default function MyListing() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchMyListing = async () => {
@@ -31,8 +33,9 @@ export default function MyListing() {
         setCurrentUser(user);
 
         // 2️⃣ MY LIST
-        const productRes = await productApi.getMyList();
-        const rawData = productRes.data?.data || [];
+        const productRes = await productApi.getMyList({ page: currentPage, limit: 5 });
+        const rawData = productRes.data?.data?.data || [];
+        const totalP = productRes.data?.data?.pagination?.totalPages || 1;
 
         // 3️⃣ MAP DATA (CHỈ DÙNG id)
        const mappedProducts = rawData.map((p) => ({
@@ -46,6 +49,7 @@ export default function MyListing() {
 
 
         setProducts(mappedProducts);
+        setTotalPages(totalP);
       } catch (err) {
         console.error("❌ Error loading my listing:", err);
         setError("Failed to load your products.");
@@ -55,7 +59,7 @@ export default function MyListing() {
     };
 
     fetchMyListing();
-  }, []);
+  }, [currentPage]);
 
   // ✅ sync UI sau khi xoá
   const handleDeleted = (deletedId) => {
@@ -125,6 +129,29 @@ export default function MyListing() {
                       onDeleted={handleDeleted}
                     />
                   ))}
+
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-4 mt-8 py-4">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg border ${currentPage === 1 ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-green-700 hover:bg-green-50 border-green-200"}`}
+                      >
+                        Previous
+                      </button>
+                      <span className="font-medium text-gray-700">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-lg border ${currentPage === totalPages ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-white text-green-700 hover:bg-green-50 border-green-200"}`}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="bg-white rounded-xl p-20 text-center shadow-sm border">
