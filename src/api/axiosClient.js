@@ -21,12 +21,11 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  // Dán cứng link ALB đã xác thực chính xác từ Terraform
-  baseURL: "http://cloud-app-alb-837970011.ap-southeast-1.elb.amazonaws.com/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
   withCredentials: true,
 });
 
-console.log("🚀 API BaseURL hiện tại là:", axiosClient.defaults.baseURL);
+console.log("🚀 API BaseURL:", axiosClient.defaults.baseURL);
 
 // Request interceptor: Tự động đính Token vào Header mỗi khi gọi API
 axiosClient.interceptors.request.use(

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feat/auto-scaling
+  workflow_dispatch:
 
 jobs:
   deploy:
